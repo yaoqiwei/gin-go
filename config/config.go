@@ -1,64 +1,23 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 
-	"github.com/fsnotify/fsnotify"
-
-	"github.com/colinrs/pkgx/logger"
-	"github.com/pkg/errors"
-
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 const envPerfix string = "GIN_"
 
-var (
-	// Conf ...
-	Conf *Config
-)
-
-// Init init config
-func Init(confPath string) error {
-	err := initConfig(confPath)
+/*Init : 初始化配置*/
+func Init() {
+	err := godotenv.Load()
 	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// initConfig init config from conf file
-func initConfig(confPath string) error {
-	if confPath != "" {
-		viper.SetConfigFile(confPath)
+		log.Println("no such .env file, use system env")
 	} else {
-		viper.AddConfigPath("conf")
-		viper.SetConfigName("config.local")
+		log.Println("use .env file")
 	}
-	viper.SetConfigType("json")
-	viper.AutomaticEnv()
-	if err := viper.ReadInConfig(); err != nil {
-		return errors.WithStack(err)
-	}
-
-	// parse to config struct
-	err := viper.Unmarshal(&Conf)
-	if err != nil {
-		return err
-	}
-	logger.Info("config:(%#v)", Conf)
-	watchConfig()
-
-	return nil
-}
-
-// watchConfig ...
-func watchConfig() {
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		logger.Info("Config file changed: %s", e.Name)
-	})
 }
 
 // AppConfig ...

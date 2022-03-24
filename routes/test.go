@@ -9,6 +9,6 @@ import (
 func Test(apiGroup *gin.RouterGroup) {
 	apiUserGroup := apiGroup.Group("/test")
 	// 用户登入
-	apiUserGroup.GET("/login", controller.TestGet)
+	apiUserGroup.POST("/login", controller.TestGet)
 
 }
