@@ -4,4 +4,5 @@ import "gin/routes"
 
 func main() {
 	routes.InitRouter()
+
 }
